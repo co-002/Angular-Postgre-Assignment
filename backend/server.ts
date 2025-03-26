@@ -1,10 +1,12 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import dotenv from "dotenv";
 import { Pool, PoolClient, PoolConfig } from 'pg';
 
 const app = express();
-const PORT = 3000;
+dotenv.config();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
