@@ -6,22 +6,33 @@ import { Pool, PoolClient, PoolConfig } from 'pg';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'https://angular-postgre-assignment-frontent.onrender.com',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+  })
+);
+
 app.use(bodyParser.json());
 
 const poolConfig: PoolConfig = {
-  user: "root", 
-  host: process.env.HOST, 
-  database: "postgredb_product", 
-  password: process.env.PASSWORD, 
-  port: Number("5432"), 
-  ssl: { rejectUnauthorized: false }, 
+  user: 'root',
+  host: process.env.HOST,
+  database: 'postgredb_product',
+  password: process.env.PASSWORD,
+  port: Number('5432'),
+  ssl: { rejectUnauthorized: false },
 };
 
 const pool = new Pool(poolConfig);
 
 pool.connect(
-  (err: Error | undefined, client: PoolClient | undefined, done: (release?: any) => void) => {
+  (
+    err: Error | undefined,
+    client: PoolClient | undefined,
+    done: (release?: any) => void
+  ) => {
     if (err) {
       console.error('Error connecting to the database:', err.message);
     } else {
