@@ -1,31 +1,27 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import dotenv from "dotenv";
 import { Pool, PoolClient, PoolConfig } from 'pg';
 
 const app = express();
-dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const poolConfig: PoolConfig = {
-  user: 'postgres',
-  host: 'localhost',
-  database: 'Product',
-  password: 'root',
-  port: 5432,
+  user: "root", 
+  host: process.env.HOST, 
+  database: "postgredb_product", 
+  password: process.env.PASSWORD, 
+  port: Number("5432"), 
+  ssl: { rejectUnauthorized: false }, 
 };
+
 const pool = new Pool(poolConfig);
 
 pool.connect(
-  (
-    err: Error | undefined,
-    client: PoolClient | undefined,
-    done: (release?: any) => void
-  ) => {
+  (err: Error | undefined, client: PoolClient | undefined, done: (release?: any) => void) => {
     if (err) {
       console.error('Error connecting to the database:', err.message);
     } else {
@@ -35,7 +31,7 @@ pool.connect(
   }
 );
 
-// For adding prodduct
+// Add Product
 app.post('/add-product', async (req: Request, res: Response): Promise<void> => {
   const { name, price, images } = req.body;
 
@@ -55,7 +51,7 @@ app.post('/add-product', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// For getting all Products
+// Get Products
 app.get('/get-products', async (req: Request, res: Response) => {
   try {
     const result = await pool.query('SELECT * FROM products');
@@ -65,7 +61,7 @@ app.get('/get-products', async (req: Request, res: Response) => {
   }
 });
 
-// For updating the product with id
+// Update Product
 app.put('/update-product/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, price, images } = req.body;
@@ -81,18 +77,17 @@ app.put('/update-product/:id', async (req: Request, res: Response) => {
   }
 });
 
-// For deleting the product
-app.delete("/delete-product/:id", async (req, res) => {
+// Delete Product
+app.delete('/delete-product/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM products WHERE id = $1", [id]);
-    res.json({ message: "Product is deleted, refresh the page" });
+    await pool.query('DELETE FROM products WHERE id = $1', [id]);
+    res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: "Error deleting product" });
+    res.status(500).json({ error: 'Error deleting product' });
   }
 });
 
-
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
