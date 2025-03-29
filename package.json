@@ -5,7 +5,7 @@
     "install-server": "cd backend && npm install",
     "start-server": "cd backend && node ./dist/server.js",
     "install-client": "npm install",
-    "start-client": "npm run start"
+    "start-client": "ng serve"
   },
   "private": true,
   "dependencies": {
